@@ -87,14 +87,24 @@ WSGI_APPLICATION = 'courtbot.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dfo0n3ffv0knbk',
+        'HOST': 'ec2-3-211-149-196.compute-1.amazonaws.com',
+        'PORT': 5432,
+        'USER': 'zckicqcrdnuvaf',
+        'PASSWORD': '69cac16ab3b6bca527abdd8057e0f08205d93a488080399a7d14f9844cace7eb',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
