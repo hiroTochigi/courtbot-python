@@ -1,20 +1,31 @@
 
 import json
 import requests
+import sys
+from calendar import monthrange
 
+def get_date_range(year, month):
 
-def get_days():
+    year = None 
+    month = None
+    date_range = 0
+    try:
+        year = int(sys.argv[1])
+        month = int(sys.argv[2])
+        date_range = monthrange(year, month)[1] + 1
+        return date_range
+    except ValueError:
+        print("Enter number")
+        return None
+
+def get_days(date_range):
     days = []
-    for i in range(1,32):
+    for i in range(1,date_range):
         if i < 10:
             days.append('0'+str(i))
         else:
             days.append(str(i))
     return days
-
-month = ['12', '01']
-days = get_days()
-year = ['2020', '2021']
 
 def get_response(month, day, year):
     response = requests.get(f'https://www.oscn.net/dockets/Results.aspx?db=all&number=&lname=&fname=&mname=&DoBMin=&DoBMax=&partytype=&apct=&dcct=&FiledDateL={month}%2F{day}%2F{year}&FiledDateH=&ClosedDateL=&ClosedDateH=&iLC=&iLCType=&iYear=&iNumber=&citation=')
@@ -25,9 +36,7 @@ def get_response(month, day, year):
         return None
 
 def store_case_number(keys, case_num_dict, month, day, year):
-    print(month)
-    print(day)
-    print(year)
+
     text_lines = get_response(month, day, year)
     if not text_lines is None:
         for text in text_lines:
@@ -53,25 +62,29 @@ def change_set_to_tuple(case_num_dict):
         case_num_dict[region] = [case_num for case_num in case_num_list]
     return case_num_dict
 
-keys = []
-case_num_dict = {}
+def main():
 
-for i in range(len(month)):
-    if i == 0:
+    year = sys.argv[1]
+    month = sys.argv[2]
+    date_range = get_date_range(year, month)
+    days = get_days(date_range)
+    if date_range:
+        keys = []
+        case_num_dict = {}
         for j in range(len(days)):
-            print(j)
-            keys, case_num_dict = store_case_number(keys, case_num_dict, month[i], days[j], year[i])
+            keys, case_num_dict = store_case_number(keys, case_num_dict, month, days[j], year)
+        case_num_dict = change_set_to_tuple(case_num_dict)
+        json_data = json.dumps(case_num_dict)
+
+        with open(f"dataset-{month}-{year}.txt", "w") as w:
+            w.write(json_data)
     else:
-        for j in range(21):
-            print(j)
-            keys, case_num_dict = store_case_number(keys, case_num_dict, month[i], days[j], year[i])
+        print("something wrong")
 
-case_num_dict = change_set_to_tuple(case_num_dict)
-json_data = json.dumps(case_num_dict)
+if __name__ == "__main__":
+    main()
 
-with open("dataset.txt", "w") as w:
-    w.write(json_data)
-
+"""
 python_data = None
 with open("dataset.txt", "r") as r:
     text = r.read()
@@ -80,4 +93,4 @@ with open("dataset.txt", "r") as r:
 for key, data in python_data.items():
     print(key)
     print(data)
-
+"""
