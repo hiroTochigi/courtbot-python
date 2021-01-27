@@ -4,6 +4,14 @@ import requests
 import sys
 from calendar import monthrange
 
+import traceback
+
+def print_traceback(ex):
+    tb_lines = traceback.format_exception(ex.__class__, ex, ex.__traceback__)
+    tb_text = ''.join(tb_lines)
+    print(tb_text)
+
+
 def get_date_range(year, month):
 
     year = None 
@@ -15,7 +23,11 @@ def get_date_range(year, month):
         date_range = monthrange(year, month)[1] + 1
         return date_range
     except ValueError:
-        print("Enter number")
+        print("Enter number as argument")
+        print_traceback(ex)
+        return None
+    except Exception as ex:
+        print(ex)
         return None
 
 def get_days(date_range):
