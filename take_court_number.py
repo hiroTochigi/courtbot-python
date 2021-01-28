@@ -3,6 +3,7 @@ import json
 import requests
 import sys
 from calendar import monthrange
+import random
 
 import traceback
 
@@ -12,16 +13,19 @@ def print_traceback(ex):
     print(tb_text)
 
 
-def get_date_range(year, month):
+def get_date_range(str_year, str_month, str_day):
 
-    year = None 
-    month = None
     date_range = 0
     try:
-        year = int(sys.argv[1])
-        month = int(sys.argv[2])
-        date_range = monthrange(year, month)[1] + 1
-        return date_range
+        year = int(str_year)
+        month = int(str_month)
+        day = int(str_day)
+        date_range = int(monthrange(year, month)[1])
+        if day <= date_range:
+            return day
+        else:
+            return random.randint(1,date_range)
+
     except ValueError:
         print("Enter number as argument")
         print_traceback(ex)
@@ -78,20 +82,19 @@ def main():
 
     year = sys.argv[1]
     month = sys.argv[2]
-    date_range = get_date_range(year, month)
-    days = get_days(date_range)
-    if date_range:
+    day = get_date_range(year, month, sys.argv[3])
+    if day:
         keys = []
         case_num_dict = {}
-        for j in range(len(days)):
-            keys, case_num_dict = store_case_number(keys, case_num_dict, month, days[j], year)
+        keys, case_num_dict = store_case_number(keys, case_num_dict, month, day, year)
         case_num_dict = change_set_to_tuple(case_num_dict)
         json_data = json.dumps(case_num_dict)
 
-        with open(f"dataset-{month}-{year}.txt", "w") as w:
+        with open(f"dataset-{month}-{day}--{year}.txt", "w") as w:
             w.write(json_data)
     else:
         print("something wrong")
+
 
 if __name__ == "__main__":
     main()
