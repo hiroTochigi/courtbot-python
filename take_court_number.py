@@ -1,5 +1,6 @@
 
 import json
+import os
 import requests
 import sys
 from calendar import monthrange
@@ -13,7 +14,7 @@ def print_traceback(ex):
     print(tb_text)
 
 
-def get_date_range(str_year, str_month, str_day):
+def get_right_day(str_year, str_month, str_day):
 
     date_range = 0
     try:
@@ -33,15 +34,6 @@ def get_date_range(str_year, str_month, str_day):
     except Exception as ex:
         print(ex)
         return None
-
-def get_days(date_range):
-    days = []
-    for i in range(1,date_range):
-        if i < 10:
-            days.append('0'+str(i))
-        else:
-            days.append(str(i))
-    return days
 
 def get_response(month, day, year):
     response = requests.get(f'https://www.oscn.net/dockets/Results.aspx?db=all&number=&lname=&fname=&mname=&DoBMin=&DoBMax=&partytype=&apct=&dcct=&FiledDateL={month}%2F{day}%2F{year}&FiledDateH=&ClosedDateL=&ClosedDateH=&iLC=&iLCType=&iYear=&iNumber=&citation=')
@@ -80,9 +72,10 @@ def change_set_to_tuple(case_num_dict):
 
 def main():
 
+    path = f'{os.getcwd()}/dataset/'
     year = sys.argv[1]
     month = sys.argv[2]
-    day = get_date_range(year, month, sys.argv[3])
+    day = get_right_day(year, month, sys.argv[3])
     if day:
         keys = []
         case_num_dict = {}
@@ -90,7 +83,7 @@ def main():
         case_num_dict = change_set_to_tuple(case_num_dict)
         json_data = json.dumps(case_num_dict)
 
-        with open(f"dataset-{month}-{day}--{year}.txt", "w") as w:
+        with open(f"{path}dataset-{month}-{day}-{year}.txt", "w") as w:
             w.write(json_data)
     else:
         print("something wrong")
