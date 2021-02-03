@@ -2,3 +2,5 @@
 __pycache__
 db.sqlite3
 database_conf.txt
+env/
+.vscode
