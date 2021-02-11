@@ -60,12 +60,13 @@ def store_case_number(keys, case_num_dict, month, day, year):
                     end = pre_data.find('&cmid')
                     case_number = pre_data[start:end]
                     print(case_number)
-                    if not region in keys:
-                        case_num_dict[region] = set()
-                        keys.append(region)
-                        case_num_dict[region].add(case_number)
-                    else:
-                        case_num_dict[region].add(case_number)
+                    if case_number.find("CF") == 0 or case_number.find("CM") == 0:
+                        if not region in keys:
+                            case_num_dict[region] = set()
+                            keys.append(region)
+                            case_num_dict[region].add(case_number)
+                        else:
+                            case_num_dict[region].add(case_number)
     return keys, case_num_dict
 
 def change_set_to_tuple(case_num_dict):

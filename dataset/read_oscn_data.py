@@ -40,7 +40,7 @@ def main():
     
 
     event_data_set = pd.DataFrame.from_dict(target_dataset)
-    event_data_set = event_data_set.drop_duplicates()
+    #event_data_set = event_data_set.drop_duplicates()
     event_data_set.to_csv(f'{path}/{change_file_name_extension(file_name)}')
         
 if __name__ == "__main__":

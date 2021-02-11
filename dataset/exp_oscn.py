@@ -9,7 +9,6 @@ import traceback
 import oscn
 
 ATTR_LIST = ['attorneys', 'case_index', 'case_number', 'closed', 'events', 'filed', 'issues', 'judge', 'number', 'offense', 'parties', 'path', 'pleas', 'response', 'sentences', 'type', 'valid',]
-#ATTR_LIST = ['attorneys', 'case_index', 'case_number', 'closed', 'cmid', 'cmids', 'counts', 'county', 'directory', 'docket', 'events', 'filed', 'headers', 'issues', 'judge', 'number', 'offense', 'parties', 'path', 'pleas', 'response', 'save', 'sentences', 'type', 'valid', 'year']
 
 EVENTS_ATTR_LIST = ['Docket', 'Event', 'Party', 'Reporter']
 
@@ -21,15 +20,13 @@ def log_traceback(ex):
 def get_event_list(case):
 
     event_list = []
-    event_data_dict = {}
     for event in case.events:
-            try:
-                print(event)
-                for attr in EVENTS_ATTR_LIST:
-                    print(attr)
-                    event_data_dict[attr] = eval(f"event.{attr}")
-                event_list.append(event_data_dict)
-            except:
+        event_data_dict = {}
+        try:
+            for attr in EVENTS_ATTR_LIST:
+                event_data_dict[attr] = eval(f"event.{attr}")
+            event_list.append(event_data_dict)
+        except:
                 print(f"there is no {attr} attribute")
     if len(event_list)>0:
         return event_list
@@ -67,7 +64,7 @@ def main():
     index_list = {}
     for key, data in case_number_dict.items():
         index_list[key] = []
-        for i in range(math.ceil(len(data)/1000)):
+        for i in range(math.ceil(len(data)/100)):
             if not index_list[key]:
                 index_list[key].append(random.randint(0,len(data)-1))
             else:
@@ -82,7 +79,7 @@ def main():
         for index in ran_num_list:
             year = case_num_list[index][3:7]
             case_num = case_num_list[index]
-            time.sleep(2.5)
+            time.sleep(5)
             try:
                 case = oscn.request.Case(year=year, county=county, number=case_num)
                 if case.events:
@@ -110,3 +107,4 @@ for data in data_list:
         print(f"{attr}:{val}")
     print()
 """
+#ATTR_LIST = ['attorneys', 'case_index', 'case_number', 'closed', 'cmid', 'cmids', 'counts', 'county', 'directory', 'docket', 'events', 'filed', 'headers', 'issues', 'judge', 'number', 'offense', 'parties', 'path', 'pleas', 'response', 'save', 'sentences', 'type', 'valid', 'year']
